@@ -387,11 +387,14 @@ export default function Home() {
       ) : (
         /* 2. MAIN DASHBOARD VIEW */
         <div className="dashboard-container">
-          {/* Floating Top Navbar */}
+          {/* Floating Top Navbar with Logged In User Badge */}
           <header className="floating-navbar glass-card">
             <div className="nav-left">
               <img src="/logo.png" alt="Kharcha Logo" className="nav-logo-img" />
-              <span className="nav-brand">Kharcha</span>
+              <div className="nav-brand-group">
+                <span className="nav-brand">Kharcha</span>
+                <span className="user-pill-tag">@{currentUser}</span>
+              </div>
             </div>
 
             <div className="nav-center">
