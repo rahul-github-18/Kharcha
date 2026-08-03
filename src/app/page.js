@@ -20,6 +20,8 @@ const DEFAULT_SUGGESTIONS = [
   'Movie & Entertainment'
 ];
 
+const ITEMS_PER_PAGE = 10;
+
 export default function Home() {
   // Auth state
   const [currentUser, setCurrentUser] = useState('');
@@ -43,6 +45,7 @@ export default function Home() {
   // Expense state
   const [expenses, setExpenses] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [amount, setAmount] = useState('');
   const [reason, setReason] = useState('');
 
@@ -80,8 +83,14 @@ export default function Home() {
   useEffect(() => {
     if (currentUser) {
       fetchExpenses(currentUser);
+      setCurrentPage(1);
     }
   }, [currentUser]);
+
+  // Reset page to 1 when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
 
   // Sync Theme Attributes
   const handleSetColorTheme = (color) => {
@@ -296,6 +305,11 @@ export default function Home() {
 
   const totalAmount = filteredExpenses.reduce((sum, item) => sum + item.amount, 0);
 
+  // Pagination Logic (10 per page)
+  const totalPages = Math.ceil(filteredExpenses.length / ITEMS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedExpenses = filteredExpenses.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   // Suggestions List
   const customReasons = expenses.map(i => i.reason.trim()).filter(Boolean);
   const combinedSuggestions = Array.from(new Set([...DEFAULT_SUGGESTIONS, ...customReasons]));
@@ -475,20 +489,43 @@ export default function Home() {
                 <small>Click the <strong>+</strong> button below to add an expense.</small>
               </div>
             ) : (
-              <ul className="expense-list">
-                {filteredExpenses.map((item) => (
-                  <li key={item.id} className="expense-item">
-                    <div className="expense-info">
-                      <span className="expense-reason">{item.reason}</span>
-                      <span className="expense-date">{item.createdAt || item.date}</span>
-                    </div>
-                    <div className="expense-right">
-                      <span className="expense-amount">-₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      <button className="delete-btn" title="Delete Expense" onClick={() => handleDeleteExpense(item.id)}>&times;</button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="expense-list">
+                  {paginatedExpenses.map((item) => (
+                    <li key={item.id} className="expense-item glass-card-transparent">
+                      <div className="expense-info">
+                        <span className="expense-reason">{item.reason}</span>
+                        <span className="expense-date">{item.createdAt || item.date}</span>
+                      </div>
+                      <div className="expense-right">
+                        <span className="expense-amount">-₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                        <button className="delete-btn" title="Delete Expense" onClick={() => handleDeleteExpense(item.id)}>&times;</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="pagination-bar glass-card">
+                    <button 
+                      className="pagination-btn" 
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    >
+                      ← Prev
+                    </button>
+                    <span className="pagination-info">Page {currentPage} of {totalPages}</span>
+                    <button 
+                      className="pagination-btn" 
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </main>
 
