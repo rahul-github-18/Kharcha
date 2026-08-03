@@ -110,12 +110,22 @@ export async function addExpense(amount, reason, username) {
   }
 
   const now = new Date();
+  const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+
+  // Count existing expenses on this date for sequence number (01, 02, 03...)
+  const existingOnDate = await sql`
+    SELECT id FROM expenses WHERE username = ${userClean} AND date = ${dateStr}
+  `;
+
+  const seqNum = (existingOnDate.length + 1).toString().padStart(2, '0');
+  const recordId = `exp-${dateStr}-${seqNum}`;
+
   const record = {
-    id: 'exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    id: recordId,
     username: userClean,
     amount: amtNum,
     reason: reasonClean,
-    date: now.toISOString().split('T')[0],
+    date: dateStr,
     timestamp: now.getTime(),
     createdAt: now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
   };
@@ -123,6 +133,7 @@ export async function addExpense(amount, reason, username) {
   await sql`
     INSERT INTO expenses (id, username, amount, reason, date, timestamp, created_at)
     VALUES (${record.id}, ${record.username}, ${record.amount}, ${record.reason}, ${record.date}, ${record.timestamp}, ${record.createdAt})
+    ON CONFLICT (id) DO UPDATE SET amount = EXCLUDED.amount, reason = EXCLUDED.reason
   `;
 
   return record;
@@ -153,18 +164,20 @@ export async function importExpenses(items, username) {
   const userClean = (username || '').trim().toLowerCase();
 
   if (Array.isArray(items)) {
-    for (const item of items) {
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
       const uName = userClean || item.username || 'rrp';
-      const id = item.id || ('exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5));
+      const dateStr = item.date || new Date().toISOString().split('T')[0];
+      const seqNum = (index + 1).toString().padStart(2, '0');
+      const id = item.id && item.id.startsWith('exp-') ? item.id : `exp-${dateStr}-${seqNum}`;
       const amount = parseFloat(item.amount);
       const reason = item.reason;
-      const date = item.date || new Date().toISOString().split('T')[0];
       const timestamp = item.timestamp || Date.now();
       const createdAt = item.createdAt || new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
       await sql`
         INSERT INTO expenses (id, username, amount, reason, date, timestamp, created_at)
-        VALUES (${id}, ${uName}, ${amount}, ${reason}, ${date}, ${timestamp}, ${createdAt})
+        VALUES (${id}, ${uName}, ${amount}, ${reason}, ${dateStr}, ${timestamp}, ${createdAt})
         ON CONFLICT (id) DO UPDATE SET amount = EXCLUDED.amount, reason = EXCLUDED.reason
       `;
     }
