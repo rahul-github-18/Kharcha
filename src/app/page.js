@@ -495,61 +495,63 @@ export default function Home() {
             <p>© 2026 Kharcha. All rights reserved.</p>
           </footer>
 
+          {/* FLOATING CHATBOX ADD EXPENSE WIDGET */}
+          {isAddModalOpen && (
+            <div className="fab-chatbox-card glass-card">
+              <div className="modal-header">
+                <h2>Add Expense</h2>
+                <button className="close-btn" onClick={() => setIsAddModalOpen(false)}>&times;</button>
+              </div>
+              <form onSubmit={handleAddExpense}>
+                <div className="form-group">
+                  <label>Amount (₹)</label>
+                  <input 
+                    type="number" 
+                    step="0.01" 
+                    min="0.01" 
+                    placeholder="₹ 0.00" 
+                    value={amount} 
+                    onChange={(e) => setAmount(e.target.value)} 
+                    autoFocus 
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Reason / Item</label>
+                  <input 
+                    type="text" 
+                    list="reason-suggestions" 
+                    placeholder="Type e.g., Food, Petrol, Tea..." 
+                    value={reason} 
+                    onChange={(e) => setReason(e.target.value)} 
+                    autoComplete="off" 
+                    required 
+                  />
+                  <datalist id="reason-suggestions">
+                    {combinedSuggestions.map((s, idx) => (
+                      <option key={idx} value={s} />
+                    ))}
+                  </datalist>
+                </div>
+                <div className="form-actions">
+                  <button type="button" className="btn btn-secondary" onClick={() => setIsAddModalOpen(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary">Save Expense</button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* Floating Action Button (+) */}
-          <button className="fab-btn" title="Add Expense" onClick={() => setIsAddModalOpen(true)}>
+          <button 
+            className={`fab-btn ${isAddModalOpen ? 'open-rotate' : ''}`} 
+            title={isAddModalOpen ? "Close Widget" : "Add Expense"} 
+            onClick={() => setIsAddModalOpen(!isAddModalOpen)}
+          >
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
           </button>
-        </div>
-      )}
-
-      {/* MODAL: ADD EXPENSE */}
-      {isAddModalOpen && (
-        <div className="modal-overlay" onClick={(e) => e.target.className === 'modal-overlay' && setIsAddModalOpen(false)}>
-          <div className="modal-card glass-card">
-            <div className="modal-header">
-              <h2>Add Expense</h2>
-              <button className="close-btn" onClick={() => setIsAddModalOpen(false)}>&times;</button>
-            </div>
-            <form onSubmit={handleAddExpense}>
-              <div className="form-group">
-                <label>Amount (₹)</label>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  min="0.01" 
-                  placeholder="₹ 0.00" 
-                  value={amount} 
-                  onChange={(e) => setAmount(e.target.value)} 
-                  autoFocus 
-                  required 
-                />
-              </div>
-              <div className="form-group">
-                <label>Reason / Item</label>
-                <input 
-                  type="text" 
-                  list="reason-suggestions" 
-                  placeholder="Type e.g., Food, Petrol, Tea..." 
-                  value={reason} 
-                  onChange={(e) => setReason(e.target.value)} 
-                  autoComplete="off" 
-                  required 
-                />
-                <datalist id="reason-suggestions">
-                  {combinedSuggestions.map((s, idx) => (
-                    <option key={idx} value={s} />
-                  ))}
-                </datalist>
-              </div>
-              <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setIsAddModalOpen(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Save Expense</button>
-              </div>
-            </form>
-          </div>
         </div>
       )}
 

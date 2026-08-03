@@ -533,12 +533,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  z-index: 90;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease, background 0.2s ease;
+  z-index: 95;
 }
 
 .fab-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.08);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
 }
 
@@ -546,7 +546,37 @@ body {
   transform: scale(0.95);
 }
 
-/* Modal Form */
+.fab-btn.open-rotate {
+  transform: rotate(135deg);
+  background: var(--danger);
+}
+
+/* ---------------- FLOATING CHATBOX WIDGET CARD ---------------- */
+.fab-chatbox-card {
+  position: fixed;
+  bottom: 6.5rem;
+  right: 2rem;
+  width: 380px;
+  max-width: calc(100vw - 2rem);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  z-index: 94;
+  animation: chatboxPopup 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: bottom right;
+}
+
+@keyframes chatboxPopup {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Form Overlay (for Data & Theme settings) */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -790,7 +820,7 @@ body {
 @media (max-width: 640px) {
   .nav-brand {
     font-size: 0.95rem;
-    display: inline-block; /* Show 'Kharcha' text on mobile */
+    display: inline-block;
   }
 
   .floating-navbar {
@@ -813,6 +843,14 @@ body {
 
   .nav-right {
     gap: 0.2rem;
+  }
+
+  .fab-chatbox-card {
+    bottom: 5.5rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    max-width: none;
   }
 }
 
