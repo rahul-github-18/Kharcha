@@ -145,7 +145,7 @@ body {
   min-height: 100dvh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.75rem 1rem 3rem 1rem;
   transition: background 0.4s ease, color 0.3s ease;
   overflow-x: hidden;
@@ -286,7 +286,7 @@ body {
   flex-direction: column;
   gap: 1.25rem;
   padding-bottom: 4rem;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 /* ---------------- FLOATING TOP NAVBAR ---------------- */
@@ -855,7 +855,7 @@ body {
 @media (max-width: 640px) {
   body {
     padding: 0.5rem 0.5rem;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .nav-brand {

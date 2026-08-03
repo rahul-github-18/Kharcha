@@ -303,7 +303,7 @@ export default function Home() {
   if (!isAuthLoaded) return null;
 
   return (
-    <div style={{ width: '100%', minHeight: '100dvh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div style={{ width: '100%', minHeight: '100dvh', display: 'flex', justifyContent: 'center', alignItems: currentUser ? 'flex-start' : 'center' }}>
       {/* 1. LOGIN / SIGN UP VIEW */}
       {!currentUser ? (
         <div className="login-container">
@@ -404,7 +404,6 @@ export default function Home() {
             </div>
 
             <div className="nav-right">
-              <button className="icon-action-btn" title="Data Management" onClick={() => setIsDataModalOpen(true)}>⚙️</button>
               <button className="icon-action-btn" title="Choose Color Palette" onClick={() => setIsThemeModalOpen(true)}>🎨</button>
 
               {deferredPrompt && (
