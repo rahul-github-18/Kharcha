@@ -142,9 +142,10 @@ body {
   background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   padding: 0.75rem 1rem 3rem 1rem;
   transition: background 0.4s ease, color 0.3s ease;
   overflow-x: hidden;
@@ -220,11 +221,17 @@ body {
   flex-shrink: 0;
 }
 
-/* ---------------- MINIMAL LOGIN CONTAINER ---------------- */
+/* ---------------- MINIMAL PERFECTLY CENTERED LOGIN CONTAINER ---------------- */
 .login-container {
   width: 100%;
   max-width: 380px;
-  margin-top: 4rem;
+  min-height: calc(100vh - 2rem);
+  min-height: calc(100dvh - 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto 0;
   animation: fadeIn 0.35s ease;
 }
 
@@ -234,6 +241,7 @@ body {
 }
 
 .login-card {
+  width: 100%;
   border-radius: var(--radius);
   padding: 2rem 2rem 2.25rem 2rem;
   position: relative;
@@ -278,6 +286,7 @@ body {
   flex-direction: column;
   gap: 1.25rem;
   padding-bottom: 4rem;
+  margin-top: 0.5rem;
 }
 
 /* ---------------- FLOATING TOP NAVBAR ---------------- */
@@ -844,6 +853,11 @@ body {
 
 /* Tablets & Mobile (max-width: 640px) */
 @media (max-width: 640px) {
+  body {
+    padding: 0.5rem 0.5rem;
+    align-items: center;
+  }
+
   .nav-brand {
     font-size: 0.9rem;
     display: inline-block;
@@ -888,11 +902,12 @@ body {
 /* Small Phones (max-width: 480px) */
 @media (max-width: 480px) {
   body {
-    padding: 0.4rem 0.35rem 3rem 0.35rem;
+    padding: 0.5rem 0.5rem;
   }
 
   .login-container {
-    margin-top: 2.5rem;
+    min-height: calc(100dvh - 1rem);
+    margin: auto 0;
   }
 
   .login-card {
