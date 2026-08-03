@@ -483,6 +483,12 @@ export default function Home() {
 
           {/* Expenses Minimal Line-Divided List */}
           <main className="expense-list-container">
+            {/* Section Heading */}
+            <div className="section-header">
+              <h3 className="section-title">Expenses</h3>
+              <span className="section-count">{filteredExpenses.length} entries</span>
+            </div>
+
             {filteredExpenses.length === 0 ? (
               <div className="empty-state">
                 <p>No expenses found for this period.</p>

@@ -429,6 +429,32 @@ body {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
+/* Section Header Heading */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  padding: 0 0.35rem;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.section-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--pill-bg);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
 /* Expense List & Clean Divider Line Layout */
 .expense-list-container {
   flex: 1;
