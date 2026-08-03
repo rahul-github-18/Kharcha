@@ -481,7 +481,7 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Expenses List */}
+          {/* Expenses Minimal Line-Divided List */}
           <main className="expense-list-container">
             {filteredExpenses.length === 0 ? (
               <div className="empty-state">
@@ -492,7 +492,7 @@ export default function Home() {
               <>
                 <ul className="expense-list">
                   {paginatedExpenses.map((item) => (
-                    <li key={item.id} className="expense-item glass-card-transparent">
+                    <li key={item.id} className="expense-item">
                       <div className="expense-info">
                         <span className="expense-reason">{item.reason}</span>
                         <span className="expense-date">{item.createdAt || item.date}</span>
