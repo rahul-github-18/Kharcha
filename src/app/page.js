@@ -24,9 +24,14 @@ export default function Home() {
   // Auth state
   const [currentUser, setCurrentUser] = useState('');
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
+  const [authTab, setAuthTab] = useState('signin');
   const [loginUser, setLoginUser] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const [loginErr, setLoginErr] = useState('');
+  
+  const [signupUser, setSignupUser] = useState('');
+  const [signupPass, setSignupPass] = useState('');
+  const [signupErr, setSignupErr] = useState('');
 
   // App & Theme state
   const [colorTheme, setColorTheme] = useState('indigo');
@@ -124,6 +129,32 @@ export default function Home() {
       setLoginPass('');
     } catch (err) {
       setLoginErr(err.message);
+    }
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setSignupErr('');
+    if (signupUser.trim().length < 3 || signupPass.trim().length < 3) {
+      setSignupErr('Username and Password must be at least 3 characters.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: signupUser, password: signupPass })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+      setCurrentUser(data.user.username);
+      localStorage.setItem('kharcha_current_user', data.user.username);
+      setSignupUser('');
+      setSignupPass('');
+      alert(`Account created successfully for ${data.user.username}!`);
+    } catch (err) {
+      setSignupErr(err.message);
     }
   };
 
@@ -273,7 +304,7 @@ export default function Home() {
 
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-      {/* 1. LOGIN VIEW (Sign In Only) */}
+      {/* 1. LOGIN / SIGN UP VIEW */}
       {!currentUser ? (
         <div className="login-container">
           <div className="login-card glass-card">
@@ -290,29 +321,67 @@ export default function Home() {
               <h2>Kharcha</h2>
             </div>
 
+            {/* Sign In / Sign Up Tabs */}
+            <div className="auth-tabs">
+              <button 
+                className={`auth-tab-btn ${authTab === 'signin' ? 'active' : ''}`}
+                onClick={() => setAuthTab('signin')}
+              >Sign In</button>
+              <button 
+                className={`auth-tab-btn ${authTab === 'signup' ? 'active' : ''}`}
+                onClick={() => setAuthTab('signup')}
+              >Sign Up</button>
+            </div>
+
             {/* Sign In Form */}
-            <form onSubmit={handleSignIn} className="auth-form">
-              <div className="form-group">
-                <input 
-                  type="text" 
-                  placeholder="Username" 
-                  value={loginUser}
-                  onChange={(e) => setLoginUser(e.target.value)}
-                  required 
-                />
-              </div>
-              <div className="form-group">
-                <input 
-                  type="password" 
-                  placeholder="Password" 
-                  value={loginPass}
-                  onChange={(e) => setLoginPass(e.target.value)}
-                  required 
-                />
-              </div>
-              {loginErr && <div className="login-error">{loginErr}</div>}
-              <button type="submit" className="btn btn-primary btn-block">Sign In</button>
-            </form>
+            {authTab === 'signin' ? (
+              <form onSubmit={handleSignIn} className="auth-form">
+                <div className="form-group">
+                  <input 
+                    type="text" 
+                    placeholder="Username" 
+                    value={loginUser}
+                    onChange={(e) => setLoginUser(e.target.value)}
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <input 
+                    type="password" 
+                    placeholder="Password" 
+                    value={loginPass}
+                    onChange={(e) => setLoginPass(e.target.value)}
+                    required 
+                  />
+                </div>
+                {loginErr && <div className="login-error">{loginErr}</div>}
+                <button type="submit" className="btn btn-primary btn-block">Sign In</button>
+              </form>
+            ) : (
+              /* Sign Up Form */
+              <form onSubmit={handleSignUp} className="auth-form">
+                <div className="form-group">
+                  <input 
+                    type="text" 
+                    placeholder="Choose Username" 
+                    value={signupUser}
+                    onChange={(e) => setSignupUser(e.target.value)}
+                    required 
+                  />
+                </div>
+                <div className="form-group">
+                  <input 
+                    type="password" 
+                    placeholder="Choose Password" 
+                    value={signupPass}
+                    onChange={(e) => setSignupPass(e.target.value)}
+                    required 
+                  />
+                </div>
+                {signupErr && <div className="login-error">{signupErr}</div>}
+                <button type="submit" className="btn btn-primary btn-block">Create Account</button>
+              </form>
+            )}
           </div>
         </div>
       ) : (
@@ -327,7 +396,6 @@ export default function Home() {
 
             <div className="nav-center">
               <div className="nav-total-pill">
-                <span className="total-pill-label">Total</span>
                 <span className="total-pill-value">₹{totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
