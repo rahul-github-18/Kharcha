@@ -110,24 +110,45 @@ export async function addExpense(amount, reason, username) {
   }
 
   const now = new Date();
-  const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  // Get date in Kolkata / India IST time (Asia/Kolkata) YYYY-MM-DD
+  const kolkataDateStr = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-  // Count existing expenses on this date for sequence number (01, 02, 03...)
+  // Get max sequence number on this date to guarantee 100% unique ID
   const existingOnDate = await sql`
-    SELECT id FROM expenses WHERE username = ${userClean} AND date = ${dateStr}
+    SELECT id FROM expenses WHERE username = ${userClean} AND date = ${kolkataDateStr}
   `;
 
-  const seqNum = (existingOnDate.length + 1).toString().padStart(2, '0');
-  const recordId = `exp-${dateStr}-${seqNum}`;
+  let maxSeq = 0;
+  existingOnDate.forEach(row => {
+    const parts = (row.id || '').split('-');
+    const seq = parseInt(parts[parts.length - 1], 10);
+    if (!isNaN(seq) && seq > maxSeq) {
+      maxSeq = seq;
+    }
+  });
+
+  const seqNum = (maxSeq + 1).toString().padStart(2, '0');
+  const recordId = `exp-${kolkataDateStr}-${seqNum}`;
+
+  // Format created_at in Kolkata (Asia/Kolkata IST) time zone: e.g. "3 Aug 2026, 6:03 PM"
+  const kolkataTimeStr = now.toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
 
   const record = {
     id: recordId,
     username: userClean,
     amount: amtNum,
     reason: reasonClean,
-    date: dateStr,
+    date: kolkataDateStr,
     timestamp: now.getTime(),
-    createdAt: now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+    createdAt: kolkataTimeStr
   };
 
   await sql`
@@ -167,13 +188,13 @@ export async function importExpenses(items, username) {
     for (let index = 0; index < items.length; index++) {
       const item = items[index];
       const uName = userClean || item.username || 'rrp';
-      const dateStr = item.date || new Date().toISOString().split('T')[0];
+      const dateStr = item.date || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
       const seqNum = (index + 1).toString().padStart(2, '0');
       const id = item.id && item.id.startsWith('exp-') ? item.id : `exp-${dateStr}-${seqNum}`;
       const amount = parseFloat(item.amount);
       const reason = item.reason;
       const timestamp = item.timestamp || Date.now();
-      const createdAt = item.createdAt || new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+      const createdAt = item.createdAt || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
 
       await sql`
         INSERT INTO expenses (id, username, amount, reason, date, timestamp, created_at)
