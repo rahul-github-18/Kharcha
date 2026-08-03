@@ -543,21 +543,63 @@ body {
   background: rgba(239, 68, 68, 0.12);
 }
 
-/* Pagination Bar */
+/* ---------------- SLEEK NUMBERED PAGINATION BAR ---------------- */
 .pagination-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.65rem 1rem;
-  border-radius: 18px;
-  margin-top: 1rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 9999px;
+  margin-top: 1.25rem;
+  gap: 0.5rem;
+  width: 100%;
 }
 
-.pagination-btn {
-  padding: 0.45rem 0.95rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
+.pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.page-num-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
   font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.page-num-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--pill-bg);
+}
+
+.page-num-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.icon-nav-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  font-weight: 700;
   background: var(--input-bg);
   border: 1px solid var(--border);
   color: var(--text);
@@ -565,21 +607,15 @@ body {
   transition: all 0.2s ease;
 }
 
-.pagination-btn:hover:not(:disabled) {
+.icon-nav-btn:hover:not(:disabled) {
   background: var(--accent);
   color: #ffffff;
   border-color: var(--accent);
 }
 
-.pagination-btn:disabled {
-  opacity: 0.4;
+.icon-nav-btn:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
-}
-
-.pagination-info {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
 }
 
 /* Empty State */

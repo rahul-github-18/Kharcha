@@ -511,23 +511,37 @@ export default function Home() {
                   ))}
                 </ul>
 
-                {/* Pagination Controls */}
+                {/* Sleek Numbered Pagination Controls */}
                 {totalPages > 1 && (
                   <div className="pagination-bar glass-card">
                     <button 
-                      className="pagination-btn" 
+                      className="pagination-btn icon-nav-btn" 
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      title="Previous Page"
                     >
-                      ← Prev
+                      ←
                     </button>
-                    <span className="pagination-info">Page {currentPage} of {totalPages}</span>
+                    
+                    <div className="pagination-numbers">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          className={`page-num-btn ${currentPage === pageNum ? 'active' : ''}`}
+                          onClick={() => setCurrentPage(pageNum)}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
+                    </div>
+
                     <button 
-                      className="pagination-btn" 
+                      className="pagination-btn icon-nav-btn" 
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      title="Next Page"
                     >
-                      Next →
+                      →
                     </button>
                   </div>
                 )}
